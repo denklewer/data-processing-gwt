@@ -1,8 +1,12 @@
 package com.epam.client;
 
 import com.epam.client.gui.ToolPanel;
+import com.epam.client.util.DataReader;
 import com.epam.client.util.Functions;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import org.moxieapps.gwt.highcharts.client.Chart;
 import java.util.function.ToDoubleFunction;
@@ -11,10 +15,14 @@ import java.util.function.ToDoubleFunction;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
+
+
 public class imageprocessing implements EntryPoint {
 
   double[] yData;
   double[] xData;
+
+
   ToDoubleFunction<double[]> drawFunction = x-> 1.0;
 
   Grapher grapher = new Grapher();
@@ -35,35 +43,8 @@ public class imageprocessing implements EntryPoint {
 
 
   public void setBehavior() {
-    toolPanel.funListBox.addChangeHandler(changeEvent -> {
-      switch (toolPanel.getSelectedFunction()) {
-        case "Linear": {
-          toolPanel.addFuncParams(new String[] {"k", "b"});
-          drawFunction = x -> Functions.LinearFunction(x[0],x[1],x[2]);
-          break;
-        }
-        case "Square": {
-          toolPanel.addFuncParams(new String[] {"a", "b", "c"});
-          drawFunction = x -> Functions.SquareFunction(x[0],x[1],x[2],x[3]);
-          break;
-        }
-        case "Log": {
-          toolPanel.addFuncParams(new String[] {"a"});
-          drawFunction = x -> Functions.LogFunction(x[0],x[1]);
-          break;
-        }
-        case "Exp": {
-          toolPanel.addFuncParams(new String[] {"b", "a"});
-          drawFunction = x -> Functions.ExpFunction(x[0],x[1],x[2]);
-          break;
-        }
-        case "Sin": {
-          toolPanel.addFuncParams(new String[] {"a", "f0"});
-          drawFunction = x -> Functions.SinFunction(x[0],x[1],x[2]);
-          break;
-        }
-      }
-    });
+    refreshFunctionProperties();
+    toolPanel.funListBox.addChangeHandler(changeEvent -> refreshFunctionProperties());
 
     toolPanel.btDraw.addClickHandler(clickEvent -> {
       double left = toolPanel.getLeft();
@@ -72,8 +53,53 @@ public class imageprocessing implements EntryPoint {
       double[] args = toolPanel.getFuncArgs();
       grapher.drawFunction(drawFunction,args,toolPanel.getSelectedFunction(),left,right,step);
     });
+    toolPanel.btUpload.addClickHandler(event -> {
+      JavaScriptObject files = toolPanel.fileUpload.getElement().getPropertyJSO("files");
+      String filename = new JSONArray(files).get(0).toString();
+      if (filename.length() == 0) {
+        Window.alert("error");
+      } else {
+        DataReader reader = new DataReader();
+        reader.getFileFromServer(toolPanel.getFileUpload(), grapher);
+      }
+    });
+
 
   }
+
+  public void refreshFunctionProperties(){
+    switch (toolPanel.getSelectedFunction()) {
+      case "Linear": {
+        toolPanel.addFuncParams(new String[] {"k", "b"});
+        drawFunction = x -> Functions.LinearFunction(x[0],x[1],x[2]);
+        break;
+      }
+      case "Square": {
+        toolPanel.addFuncParams(new String[] {"a", "b", "c"});
+        drawFunction = x -> Functions.SquareFunction(x[0],x[1],x[2],x[3]);
+        break;
+      }
+      case "Log": {
+        toolPanel.addFuncParams(new String[] {"a"});
+        drawFunction = x -> Functions.LogFunction(x[0],x[1]);
+        break;
+      }
+      case "Exp": {
+        toolPanel.addFuncParams(new String[] {"b", "a"});
+        drawFunction = x -> Functions.ExpFunction(x[0],x[1],x[2]);
+        break;
+      }
+      case "Sin": {
+        toolPanel.addFuncParams(new String[] {"a", "f0"});
+        drawFunction = x -> Functions.SinFunction(x[0],x[1],x[2]);
+        break;
+      }
+    }
+
+  }
+
+
+
 
 
 }

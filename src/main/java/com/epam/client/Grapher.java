@@ -7,9 +7,6 @@ import org.moxieapps.gwt.highcharts.client.plotOptions.Marker;
 import org.moxieapps.gwt.highcharts.client.plotOptions.PlotOptions;
 import org.moxieapps.gwt.highcharts.client.plotOptions.SeriesPlotOptions;
 
-
-import java.util.function.DoubleUnaryOperator;
-import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 
 public class Grapher {
@@ -17,8 +14,8 @@ public class Grapher {
     public Chart createChart() {
         currentChart = new Chart()
                 .setType(Series.Type.LINE)
-                .setChartTitleText("Test chart tittle")
-                .setChartSubtitleText("Test chart subtittle")
+                .setChartTitleText("Chart")
+                .setChartSubtitleText("Simple line chart")
                 .setZoomType(BaseChart.ZoomType.X)
                 .setLegend(
                         new Legend().setAlign(Legend.Align.LEFT)

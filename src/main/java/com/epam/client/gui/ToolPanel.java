@@ -3,6 +3,7 @@ package com.epam.client.gui;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class ToolPanel extends  VerticalPanel{
@@ -14,6 +15,8 @@ public class ToolPanel extends  VerticalPanel{
     private  DockPanel controlPanel = new DockPanel();
 
 
+    public  FileUpload fileUpload =new FileUpload();
+    public  Button btUpload = new Button("Load file");
 
     private TextBox tbLeft;
     private TextBox tbRight;
@@ -42,20 +45,14 @@ public class ToolPanel extends  VerticalPanel{
 
     private DockPanel createFilePanel() {
        filePanel.setSpacing(2);
-        FileUpload fileUpload = new FileUpload();
         fileUpload.ensureDebugId("fileUpload");
         filePanel.add(fileUpload, DockPanel.NORTH);
-        Button uploadButton = new Button("Load file");
-        uploadButton.addClickHandler(event -> {
-            String filename = fileUpload.getFilename();
-            if (filename.length() == 0) {
-                Window.alert("error");
-            } else {
-                Window.alert(filename);
-            }
-        });
-        filePanel.add(uploadButton, DockPanel.NORTH);
+
+        filePanel.add(btUpload, DockPanel.NORTH);
         filePanel.setBorderWidth(1);
+
+
+
         return filePanel;
     }
 
@@ -135,6 +132,10 @@ public class ToolPanel extends  VerticalPanel{
     public void addTransParams( String[] parameters) {
         addParams(transformationParams, parameters);
     }
+
+   public FileUpload getFileUpload() {
+        return fileUpload;
+   }
 
 
     public double parseValue(String str) {
